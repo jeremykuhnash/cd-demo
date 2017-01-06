@@ -28,13 +28,13 @@ node {
 
     // Build Docker image
     stage 'Build'
-    sh "docker build -t mesosphere/cd-demo-app:${gitCommit()} ."
+    sh "docker build -t jeremykmsphere/cd-demo-app:${gitCommit()} ."
 
 
     // Test Docker image
     stage 'Test'
-    sh "docker run -d --name=test-container-${env.BUILD_NUMBER} mesosphere/cd-demo-app:${gitCommit()}"
-    sh "docker run mesosphere/linkchecker linkchecker --no-warnings http://${ipAddress()}:4000/"
+    sh "docker run -d --name=test-container-${env.BUILD_NUMBER} jeremykmsphere/cd-demo-app:${gitCommit()}"
+    sh "docker run jeremykmsphere/linkchecker linkchecker --no-warnings http://${ipAddress()}:4000/"
 
 
     // Log in and push image to Docker Hub
@@ -48,7 +48,7 @@ node {
         ]]
     ) {
         sh "docker login -u '${env.DOCKER_HUB_USERNAME}' -p '${env.DOCKER_HUB_PASSWORD}' -e demo@mesosphere.com"
-        sh "docker push mesosphere/cd-demo-app:${gitCommit()}"
+        sh "docker push jeremykmsphere/cd-demo-app:${gitCommit()}"
     }
 
 
@@ -61,7 +61,7 @@ node {
         credentialsId: 'dcos-token',
         filename: 'marathon.json',
         appid: 'jenkins-deployed-app',
-        docker: "mesosphere/cd-demo-app:${gitCommit()}".toString(),
+        docker: "jeremykmsphere/cd-demo-app:${gitCommit()}".toString(),
         labels: ['lastChangedBy': "${gitEmail()}".toString()]
     )
 
